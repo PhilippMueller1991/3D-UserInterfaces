@@ -168,6 +168,36 @@ public class CameraTransformScript : MonoBehaviour {
         */
     }
 
+    float InputForward()
+    {
+        return 0;
+    }
+
+    float InputRight()
+    {
+        return 0;
+    }
+
+    float InputYaw()
+    {
+        return 0;
+    }
+
+    float InputPitch()
+    {
+        return 0;
+    }
+
+    float InputRoll()
+    {
+        return 0;
+    }
+
+    float InputUpward()
+    {
+        return 0;
+    }
+
 
 
 
