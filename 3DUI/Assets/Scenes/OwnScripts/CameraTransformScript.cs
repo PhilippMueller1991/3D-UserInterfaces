@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class CameraTransformScript : MonoBehaviour {
 
+    public GameObject[] coordinateSystemCheck;
+
     public Quaternion currentCameraRotationQuat;
     public Vector3 currentCameraPosition;
 
@@ -134,6 +136,11 @@ void Start () {
 
             addAmount = 0;
             addedCameraPositions = Vector3.zero;
+
+            foreach (GameObject coordinate in coordinateSystemCheck)
+            {
+                coordinate.SetActive(true);
+            }
         }
         // After a delay of 3 seconds to position oneself at the center:
         // Instructions to hold Device for 3 seconds top, then bottom, then left, then right, then forward, then backwards (close to oneself)
@@ -142,8 +149,13 @@ void Start () {
         // For now, just press Backspace to copy the values after calibrating.
         if(Input.GetKeyDown(KeyCode.Backspace))
         {
-            float boundaryFactor = 0.8f;  // How close the boundary value should be on the respective min/max values
-            float thresholdFactor = 0.1f; // How close the threshold value should be on the average center position
+            foreach (GameObject coordinate in coordinateSystemCheck)
+            {
+                coordinate.SetActive(false);
+            }
+
+            float boundaryFactor = 0.9f;  // How close the boundary value should be on the respective min/max values
+            float thresholdFactor = 0.3f; // How close the threshold value should be on the average center position
 
             boundaryPitchP  = (maxZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
             boundaryPitchN  = (minZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
@@ -272,7 +284,7 @@ void Start () {
     {
         currentCameraPosition = this.transform.position;
         currentCameraPosition.y *= -1;
-        float testingDifference = currentCameraPosition.z - averageCameraPosition.z;
+        float testingDifference = currentCameraPosition.z; // - averageCameraPosition.z;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryPitchN, boundaryPitchP);
         if (testingDifference <= thresholdPitchN)
@@ -294,7 +306,7 @@ void Start () {
     {
         currentCameraPosition = this.transform.position;
         currentCameraPosition.y *= -1;
-        float testingDifference = currentCameraPosition.x - averageCameraPosition.x;
+        float testingDifference = currentCameraPosition.x; // - averageCameraPosition.x;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryRollN, boundaryRollP);
         if (testingDifference <= thresholdRollN)
@@ -316,7 +328,7 @@ void Start () {
     {
         currentCameraPosition = this.transform.position;
         currentCameraPosition.y *= -1;
-        float testingDifference = currentCameraPosition.y - averageCameraPosition.y;
+        float testingDifference = currentCameraPosition.y; // - averageCameraPosition.y;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryUpwardN, boundaryUpwardP);
         if (testingDifference <= thresholdUpwardN)
