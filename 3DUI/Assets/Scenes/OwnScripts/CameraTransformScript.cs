@@ -13,6 +13,22 @@ public class CameraTransformScript : MonoBehaviour {
     public float angleDiffX;
     public float angleDiffY;
     public float angleDiffZ;
+    public float positionX;
+    public float positionY;
+    public float positionZ;
+
+    public float thresholdForwardP;
+    public float thresholdForwardN;
+    public float thresholdRightP;
+    public float thresholdRightN;
+    public float thresholdYawP;
+    public float thresholdYawN;
+    public float thresholdPitchP;
+    public float thresholdPitchN;
+    public float thresholdRollP;
+    public float thresholdRollN;
+    public float thresholdUpwardP;
+    public float thresholdUpwardN;
 
     // Use this for initialization
     void Start () {
@@ -21,16 +37,16 @@ public class CameraTransformScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        float output = 0;
+        InputForward(ref output);
 
-        InputForward();
+        InputRight(ref output);
 
-        InputRight();
-
-        InputYaw();
+        InputYaw(ref output);
         
     }
 
-    float InputForward()
+    bool InputForward(ref float Output)
     {
         currentCameraRotationQuat = this.transform.rotation;
 
@@ -45,10 +61,16 @@ public class CameraTransformScript : MonoBehaviour {
         // get the signed difference in these angles
         angleDiffX = Mathf.DeltaAngle(angleA, angleB);
 
-        return 0;
+        
+        if(angleDiffX < 0 && angleDiffX <= thresholdForwardN)
+        {
+
+        }
+
+        return false;
     }
 
-    float InputRight()
+    bool InputRight(ref float Output)
     {
         currentCameraRotationQuat = this.transform.rotation;
 
@@ -63,31 +85,31 @@ public class CameraTransformScript : MonoBehaviour {
         // get the signed difference in these angles
         angleDiffY = Mathf.DeltaAngle(angleA, angleB);
 
-        return 0;
+        return false;
     }
 
-    float InputYaw()
+    bool InputYaw(ref float Output)
     {
         // get a numeric angle for Z vector               
         angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
         angleDiffZ = angleA;
 
-        return 0;
+        return false;
     }
 
-    float InputPitch()
+    bool InputPitch(ref float Output)
     {
-        return 0;
+        return false;
     }
 
-    float InputRoll()
+    bool InputRoll(ref float Output)
     {
-        return 0;
+        return false;
     }
 
-    float InputUpward()
+    bool InputUpward(ref float Output)
     {
-        return 0;
+        return false;
     }
 
 
