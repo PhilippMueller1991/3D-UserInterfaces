@@ -106,8 +106,8 @@ public class CameraTransformScript : MonoBehaviour {
         // Alternative -- testing --
 
         // get a "forward vector" for each rotation
-        forwardA = Quaternion.identity * Vector3.forward;
-        forwardB = currentCameraRotationQuat * Vector3.forward;
+        forwardA = currentCameraRotationQuat * Vector3.forward;
+        forwardB = Quaternion.identity * Vector3.forward;
 
         // get a numeric angle for each vector, on the X-Z plane (relative to world forward)
         angleA = Mathf.Atan2(forwardA.x, forwardA.z) * Mathf.Rad2Deg;
@@ -116,7 +116,22 @@ public class CameraTransformScript : MonoBehaviour {
         // get the signed difference in these angles
         angleDiffY = Mathf.DeltaAngle(angleA, angleB);
 
-        angleForward = Mathf.Atan2(forwardA.z, forwardB.z) * Mathf.Rad2Deg;
+
+        // get a numeric angle for each vector, on the Y-Z plane (relative to world forward)
+        angleA = Mathf.Atan2(forwardA.y, forwardA.z) * Mathf.Rad2Deg;
+        angleB = Mathf.Atan2(forwardB.y, forwardB.z) * Mathf.Rad2Deg;
+
+        // get the signed difference in these angles
+        angleDiffX = Mathf.DeltaAngle(angleA, angleB);
+
+
+        // get a numeric angle for each vector, on the X-Y plane (relative to world forward)    // <-- Rotation around Z needs to get fixed for better input values
+        angleA = Mathf.Atan2(forwardA.x, forwardA.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
+        angleB = Mathf.Atan2(forwardB.x, forwardB.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
+                                                                                                // <-- Rotation around Z needs to get fixed for better input values
+        // get the signed difference in these angles                                            // <-- Rotation around Z needs to get fixed for better input values
+        angleDiffZ = Mathf.DeltaAngle(angleB, angleA) + 90;                                     // <-- Rotation around Z needs to get fixed for better input values
+
 
 
 
