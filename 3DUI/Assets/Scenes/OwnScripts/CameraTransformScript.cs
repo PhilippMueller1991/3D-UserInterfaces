@@ -128,9 +128,12 @@ public class CameraTransformScript : MonoBehaviour {
         // get a numeric angle for each vector, on the X-Y plane (relative to world forward)    // <-- Rotation around Z needs to get fixed for better input values
         angleA = Mathf.Atan2(forwardA.x, forwardA.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
         angleB = Mathf.Atan2(forwardB.x, forwardB.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
+        //angleA = Mathf.Acos(forwardA.z) * Mathf.Rad2Deg;
+        angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
                                                                                                 // <-- Rotation around Z needs to get fixed for better input values
         // get the signed difference in these angles                                            // <-- Rotation around Z needs to get fixed for better input values
-        angleDiffZ = Mathf.DeltaAngle(angleB, angleA) + 90;                                     // <-- Rotation around Z needs to get fixed for better input values
+        //angleDiffZ = Mathf.DeltaAngle(angleB, angleA) + 90;                                     // <-- Rotation around Z needs to get fixed for better input values
+        angleDiffZ = angleA;
 
 
 
