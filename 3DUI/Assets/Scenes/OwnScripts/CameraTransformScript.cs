@@ -4,10 +4,15 @@ using System.Collections.Generic;
 
 public class CameraTransformScript : MonoBehaviour {
 
+    /*
     public Vector3 averageCameraRotation;
     public Quaternion averageCameraRotationQuat;
     public Vector3 currentCameraRotation;
+    */
+
     public Quaternion currentCameraRotationQuat;
+
+    /*
     //List<Vector3> oldCameraRotations;
     Vector3[] oldCameraRotations;
     //Quaternion[] oldCameraRotationsQuat;
@@ -23,6 +28,7 @@ public class CameraTransformScript : MonoBehaviour {
     public int amountOfQuat;
 
     public Vector4 cumulativeForQuat;
+    */
 
     public Vector3 forwardA;
     public Vector3 forwardB;
@@ -32,10 +38,11 @@ public class CameraTransformScript : MonoBehaviour {
     public float angleDiffY;
     public float angleDiffZ;
 
-    public float angleForward;
+    //public float angleForward;
 
     // Use this for initialization
     void Start () {
+        /*
         currentCameraRotation = this.transform.rotation.eulerAngles;
         averageCameraRotation = currentCameraRotation;
 
@@ -48,10 +55,15 @@ public class CameraTransformScript : MonoBehaviour {
         //oldCameraRotationsQuat = new Quaternion[maxElementsInList];
         fullArray = false;
         amountOfQuat = 0;
+        */
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        currentCameraRotationQuat = this.transform.rotation;
+
+        /*
         if (currentPosition >= maxElementsInList)
         {
             currentPosition = 0;
@@ -65,7 +77,7 @@ public class CameraTransformScript : MonoBehaviour {
         //oldCameraRotationsQuat[currentPosition] = currentCameraRotationQuat;
 
         currentPosition++;
-
+        */
 
         /*
         averageCameraRotation = (averageCameraRotation + currentCameraRotation) / 2;
@@ -76,6 +88,7 @@ public class CameraTransformScript : MonoBehaviour {
         */
         //averageCameraRotation = new Vector3();
 
+        /*
         // Vector3 approach with Euler axis
         if (fullArray)
         {
@@ -89,7 +102,7 @@ public class CameraTransformScript : MonoBehaviour {
         var dif = Quaternion.Inverse(Quaternion.Euler(averageCameraRotation)) * currentCameraRotationQuat;
         /*float[] difference = {  changeInX = averageCameraRotation.x - currentCameraRotation.x,
                                 changeInY = averageCameraRotation.y - currentCameraRotation.y,
-                                changeInZ = averageCameraRotation.z - currentCameraRotation.z };*/
+                                changeInZ = averageCameraRotation.z - currentCameraRotation.z };*//*
         float[] difference = {  changeInX = dif.eulerAngles.x,
                                 changeInY = dif.eulerAngles.y,
                                 changeInZ = dif.eulerAngles.z };
@@ -101,6 +114,8 @@ public class CameraTransformScript : MonoBehaviour {
             maxChangeIn = "Y";
         else
             maxChangeIn = "Z";
+        */
+
 
 
         // Alternative -- testing --
@@ -125,19 +140,13 @@ public class CameraTransformScript : MonoBehaviour {
         angleDiffX = Mathf.DeltaAngle(angleA, angleB);
 
 
-        // get a numeric angle for each vector, on the X-Y plane (relative to world forward)    // <-- Rotation around Z needs to get fixed for better input values
-        angleA = Mathf.Atan2(forwardA.x, forwardA.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
-        angleB = Mathf.Atan2(forwardB.x, forwardB.y) * Mathf.Rad2Deg;                           // <-- Rotation around Z needs to get fixed for better input values
-        //angleA = Mathf.Acos(forwardA.z) * Mathf.Rad2Deg;
+        // get a numeric angle for Z vector               
         angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
-                                                                                                // <-- Rotation around Z needs to get fixed for better input values
-        // get the signed difference in these angles                                            // <-- Rotation around Z needs to get fixed for better input values
-        //angleDiffZ = Mathf.DeltaAngle(angleB, angleA) + 90;                                     // <-- Rotation around Z needs to get fixed for better input values
         angleDiffZ = angleA;
 
 
 
-
+        /*
         // Quaternion approach
 
         averageCameraRotationQuat = CameraTransformScript.AverageQuaternion(ref cumulativeForQuat, currentCameraRotationQuat, averageCameraRotationQuat, ++amountOfQuat);
@@ -156,6 +165,7 @@ public class CameraTransformScript : MonoBehaviour {
             maxChangeInQuat = "Y";
         else
             maxChangeInQuat = "Z";
+        */
     }
 
 
