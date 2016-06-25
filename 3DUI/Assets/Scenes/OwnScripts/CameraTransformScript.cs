@@ -4,31 +4,7 @@ using System.Collections.Generic;
 
 public class CameraTransformScript : MonoBehaviour {
 
-    /*
-    public Vector3 averageCameraRotation;
-    public Quaternion averageCameraRotationQuat;
-    public Vector3 currentCameraRotation;
-    */
-
     public Quaternion currentCameraRotationQuat;
-
-    /*
-    //List<Vector3> oldCameraRotations;
-    Vector3[] oldCameraRotations;
-    //Quaternion[] oldCameraRotationsQuat;
-    public int maxElementsInList;
-    int currentPosition;
-    bool fullArray;
-    public float maxChange;
-    public float maxChangeQuat;
-    public string maxChangeIn;
-    public string maxChangeInQuat;
-    public float changeInX, changeInY, changeInZ;
-    public float changeInQuatW, changeInQuatX, changeInQuatY, changeInQuatZ;
-    public int amountOfQuat;
-
-    public Vector4 cumulativeForQuat;
-    */
 
     public Vector3 forwardA;
     public Vector3 forwardB;
@@ -38,87 +14,43 @@ public class CameraTransformScript : MonoBehaviour {
     public float angleDiffY;
     public float angleDiffZ;
 
-    //public float angleForward;
-
     // Use this for initialization
     void Start () {
-        /*
-        currentCameraRotation = this.transform.rotation.eulerAngles;
-        averageCameraRotation = currentCameraRotation;
-
-        currentCameraRotationQuat = this.transform.rotation;
-        averageCameraRotationQuat = currentCameraRotationQuat;
-
-        maxElementsInList = 10;
-        currentPosition = 0;
-        oldCameraRotations = new Vector3[maxElementsInList];
-        //oldCameraRotationsQuat = new Quaternion[maxElementsInList];
-        fullArray = false;
-        amountOfQuat = 0;
-        */
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
 
+        InputForward();
+
+        InputRight();
+
+        InputYaw();
+        
+    }
+
+    float InputForward()
+    {
         currentCameraRotationQuat = this.transform.rotation;
 
-        /*
-        if (currentPosition >= maxElementsInList)
-        {
-            currentPosition = 0;
-            fullArray = true;
-        }
+        // get a "forward vector" for each rotation
+        forwardA = currentCameraRotationQuat * Vector3.forward;
+        forwardB = Quaternion.identity * Vector3.forward;
 
-        currentCameraRotation = this.transform.rotation.eulerAngles;
+        // get a numeric angle for each vector, on the Y-Z plane (relative to world forward)
+        angleA = Mathf.Atan2(forwardA.y, forwardA.z) * Mathf.Rad2Deg;
+        angleB = Mathf.Atan2(forwardB.y, forwardB.z) * Mathf.Rad2Deg;
+
+        // get the signed difference in these angles
+        angleDiffX = Mathf.DeltaAngle(angleA, angleB);
+
+        return 0;
+    }
+
+    float InputRight()
+    {
         currentCameraRotationQuat = this.transform.rotation;
-
-        oldCameraRotations[currentPosition] = currentCameraRotation;
-        //oldCameraRotationsQuat[currentPosition] = currentCameraRotationQuat;
-
-        currentPosition++;
-        */
-
-        /*
-        averageCameraRotation = (averageCameraRotation + currentCameraRotation) / 2;
-        float[] difference = {  averageCameraRotation.x - currentCameraRotation.x,
-                                averageCameraRotation.y - currentCameraRotation.y,
-                                averageCameraRotation.z - currentCameraRotation.z };
-        maxChange = Mathf.Max(difference);
-        */
-        //averageCameraRotation = new Vector3();
-
-        /*
-        // Vector3 approach with Euler axis
-        if (fullArray)
-        {
-            for (int i = 0; i < maxElementsInList; i++)
-            {
-                averageCameraRotation += oldCameraRotations[i];
-            }
-            averageCameraRotation /= (oldCameraRotations.Length + 1);
-        }
-
-        var dif = Quaternion.Inverse(Quaternion.Euler(averageCameraRotation)) * currentCameraRotationQuat;
-        /*float[] difference = {  changeInX = averageCameraRotation.x - currentCameraRotation.x,
-                                changeInY = averageCameraRotation.y - currentCameraRotation.y,
-                                changeInZ = averageCameraRotation.z - currentCameraRotation.z };*//*
-        float[] difference = {  changeInX = dif.eulerAngles.x,
-                                changeInY = dif.eulerAngles.y,
-                                changeInZ = dif.eulerAngles.z };
-        maxChange = Mathf.Max(difference);
-
-        if (maxChange == changeInX)
-            maxChangeIn = "X";
-        else if (maxChange == changeInY)
-            maxChangeIn = "Y";
-        else
-            maxChangeIn = "Z";
-        */
-
-
-
-        // Alternative -- testing --
 
         // get a "forward vector" for each rotation
         forwardA = currentCameraRotationQuat * Vector3.forward;
@@ -131,55 +63,15 @@ public class CameraTransformScript : MonoBehaviour {
         // get the signed difference in these angles
         angleDiffY = Mathf.DeltaAngle(angleA, angleB);
 
-
-        // get a numeric angle for each vector, on the Y-Z plane (relative to world forward)
-        angleA = Mathf.Atan2(forwardA.y, forwardA.z) * Mathf.Rad2Deg;
-        angleB = Mathf.Atan2(forwardB.y, forwardB.z) * Mathf.Rad2Deg;
-
-        // get the signed difference in these angles
-        angleDiffX = Mathf.DeltaAngle(angleA, angleB);
-
-
-        // get a numeric angle for Z vector               
-        angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
-        angleDiffZ = angleA;
-
-
-
-        /*
-        // Quaternion approach
-
-        averageCameraRotationQuat = CameraTransformScript.AverageQuaternion(ref cumulativeForQuat, currentCameraRotationQuat, averageCameraRotationQuat, ++amountOfQuat);
-
-        float[] differenceQuat = {  changeInQuatW = averageCameraRotationQuat.w - currentCameraRotationQuat.w,
-                                    changeInQuatX = averageCameraRotationQuat.x - currentCameraRotationQuat.x,
-                                    changeInQuatY = averageCameraRotationQuat.y - currentCameraRotationQuat.y,
-                                    changeInQuatZ = averageCameraRotationQuat.z - currentCameraRotationQuat.z };
-        maxChangeQuat = Mathf.Max(differenceQuat);
-
-        if (maxChangeQuat == changeInQuatW)
-            maxChangeInQuat = "W";
-        else if (maxChangeQuat == changeInQuatX)
-            maxChangeInQuat = "X";
-        else if (maxChangeQuat == changeInQuatY)
-            maxChangeInQuat = "Y";
-        else
-            maxChangeInQuat = "Z";
-        */
-    }
-
-    float InputForward()
-    {
-        return 0;
-    }
-
-    float InputRight()
-    {
         return 0;
     }
 
     float InputYaw()
     {
+        // get a numeric angle for Z vector               
+        angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
+        angleDiffZ = angleA;
+
         return 0;
     }
 
