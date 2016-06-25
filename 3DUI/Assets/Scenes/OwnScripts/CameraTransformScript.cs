@@ -24,6 +24,16 @@ public class CameraTransformScript : MonoBehaviour {
 
     public Vector4 cumulativeForQuat;
 
+    public Vector3 forwardA;
+    public Vector3 forwardB;
+    public float angleA;
+    public float angleB;
+    public float angleDiffX;
+    public float angleDiffY;
+    public float angleDiffZ;
+
+    public float angleForward;
+
     // Use this for initialization
     void Start () {
         currentCameraRotation = this.transform.rotation.eulerAngles;
@@ -76,9 +86,13 @@ public class CameraTransformScript : MonoBehaviour {
             averageCameraRotation /= (oldCameraRotations.Length + 1);
         }
 
-        float[] difference = {  changeInX = averageCameraRotation.x - currentCameraRotation.x,
+        var dif = Quaternion.Inverse(Quaternion.Euler(averageCameraRotation)) * currentCameraRotationQuat;
+        /*float[] difference = {  changeInX = averageCameraRotation.x - currentCameraRotation.x,
                                 changeInY = averageCameraRotation.y - currentCameraRotation.y,
-                                changeInZ = averageCameraRotation.z - currentCameraRotation.z };
+                                changeInZ = averageCameraRotation.z - currentCameraRotation.z };*/
+        float[] difference = {  changeInX = dif.eulerAngles.x,
+                                changeInY = dif.eulerAngles.y,
+                                changeInZ = dif.eulerAngles.z };
         maxChange = Mathf.Max(difference);
 
         if (maxChange == changeInX)
@@ -87,6 +101,23 @@ public class CameraTransformScript : MonoBehaviour {
             maxChangeIn = "Y";
         else
             maxChangeIn = "Z";
+
+
+        // Alternative -- testing --
+
+        // get a "forward vector" for each rotation
+        forwardA = Quaternion.identity * Vector3.forward;
+        forwardB = currentCameraRotationQuat * Vector3.forward;
+
+        // get a numeric angle for each vector, on the X-Z plane (relative to world forward)
+        angleA = Mathf.Atan2(forwardA.x, forwardA.z) * Mathf.Rad2Deg;
+        angleB = Mathf.Atan2(forwardB.x, forwardB.z) * Mathf.Rad2Deg;
+
+        // get the signed difference in these angles
+        angleDiffY = Mathf.DeltaAngle(angleA, angleB);
+
+        angleForward = Mathf.Atan2(forwardA.z, forwardB.z) * Mathf.Rad2Deg;
+
 
 
         // Quaternion approach
