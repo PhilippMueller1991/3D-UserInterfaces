@@ -46,8 +46,20 @@ public class CameraTransformScript : MonoBehaviour {
     public float boundaryUpwardP;
     public float boundaryUpwardN;
 
-    // Use this for initialization
-    void Start () {
+    public float maxX, minX;
+    public float maxY, minY;
+    public float maxZ, minZ;
+
+    public int addAmount = 0;
+    public Vector3 addedCameraPositions = Vector3.zero;
+    public Vector3 averageCameraPosition;
+    //Vector3[] multipleVectors new Vector3[totalAmount];
+ 
+
+
+// Use this for initialization
+void Start () {
+        // Amount of degrees needed to register movement
         thresholdForwardP =  20f;
         thresholdForwardN = -20f;
         thresholdRightP   =  20f;
@@ -61,6 +73,7 @@ public class CameraTransformScript : MonoBehaviour {
         thresholdUpwardP  =  20f;
         thresholdUpwardN  = -20f;
 
+        // Boundary Degrees capping the resulting values
         boundaryForwardP  =  45f;
         boundaryForwardN  = -45f;
         boundaryRightP    =  45f;
@@ -73,11 +86,15 @@ public class CameraTransformScript : MonoBehaviour {
         boundaryRollN     = -45f;
         boundaryUpwardP   =  45f;
         boundaryUpwardN   = -45f;
+
+        minX = minY = minZ =  100;
+        maxX = maxY = maxZ = -100;
+        currentCameraPosition = Vector3.zero;
     }
 	
 	// Update is called once per frame
 	void Update () {
-
+        
         float output = angleForward = angleRight = angleYaw = positionPitch = positionRoll = positionUpward = 0;
 
         if(InputForward(ref output))
@@ -95,7 +112,57 @@ public class CameraTransformScript : MonoBehaviour {
             angleYaw = output;
         }
 
-        if(InputPitch(ref output))
+        addAmount++;
+        addedCameraPositions += currentCameraPosition;
+        averageCameraPosition = addedCameraPositions / (float)Mathf.Abs(addAmount);
+
+        maxX = currentCameraPosition.x > maxX ? currentCameraPosition.x : maxX;
+        maxY = currentCameraPosition.y > maxY ? currentCameraPosition.y : maxY;
+        maxZ = currentCameraPosition.z > maxZ ? currentCameraPosition.z : maxZ;
+        minX = currentCameraPosition.x < minX ? currentCameraPosition.x : minX;
+        minY = currentCameraPosition.y < minY ? currentCameraPosition.y : minY;
+        minZ = currentCameraPosition.z < minZ ? currentCameraPosition.z : minZ;
+
+        // Initializing System Values
+        // Calibrate values when entered a certain Button!
+        // TODO
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            minX = minY = minZ = 100;
+            maxX = maxY = maxZ = -100;
+
+            addAmount = 0;
+            addedCameraPositions = Vector3.zero;
+        }
+        // After a delay of 3 seconds to position oneself at the center:
+        // Instructions to hold Device for 3 seconds top, then bottom, then left, then right, then forward, then backwards (close to oneself)
+        // Remember these min/max values and set Boundaries for Pitch, Roll and Upward.
+        // Threshold being determined by a weighted percentage between boundary and center towards averageCameraPositions
+        // For now, just press Backspace to copy the values after calibrating.
+        if(Input.GetKeyDown(KeyCode.Backspace))
+        {
+            float boundaryFactor = 0.8f;  // How close the boundary value should be on the respective min/max values
+            float thresholdFactor = 0.1f; // How close the threshold value should be on the average center position
+
+            boundaryPitchP  = (maxZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
+            boundaryPitchN  = (minZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
+            boundaryRollP   = (maxX - averageCameraPosition.x) * boundaryFactor + averageCameraPosition.x;
+            boundaryRollN   = (minX - averageCameraPosition.x) * boundaryFactor + averageCameraPosition.x;
+            boundaryUpwardP = (maxY - averageCameraPosition.y) * boundaryFactor + averageCameraPosition.y;
+            boundaryUpwardN = (minY - averageCameraPosition.y) * boundaryFactor + averageCameraPosition.y;
+
+            thresholdPitchP  = (boundaryPitchP - averageCameraPosition.z)  *  thresholdFactor  + averageCameraPosition.z;
+            thresholdPitchN  = (boundaryPitchN - averageCameraPosition.z)  *  thresholdFactor  + averageCameraPosition.z;
+            thresholdRollP   = (boundaryRollP - averageCameraPosition.x)   *  thresholdFactor  + averageCameraPosition.x;
+            thresholdRollN   = (boundaryRollN - averageCameraPosition.x)   *  thresholdFactor  + averageCameraPosition.x;
+            thresholdUpwardP = (boundaryUpwardP - averageCameraPosition.y) *  thresholdFactor  + averageCameraPosition.y;
+            thresholdUpwardN = (boundaryUpwardN - averageCameraPosition.y) *  thresholdFactor  + averageCameraPosition.y;
+        }
+
+        // End TODO
+
+        if (InputPitch(ref output))
         {
             positionPitch = output;
         }
@@ -111,6 +178,8 @@ public class CameraTransformScript : MonoBehaviour {
         }
         
     }
+
+    /* -------------------- // Methods for position change // -------------------- */
 
     bool InputForward(ref float Output)
     {
@@ -144,6 +213,28 @@ public class CameraTransformScript : MonoBehaviour {
         return false;
     }
 
+    bool InputRight(ref float Output)
+    {
+        // get a numeric angle for Z vector               
+        angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
+        float angleDiffZ = angleA;
+
+        angleDiffZ = Mathf.Clamp(angleDiffZ, boundaryRightN, boundaryRightP);
+        if (angleDiffZ <= thresholdRightN)
+        {
+            //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+            Output = ((angleDiffZ - thresholdRightN) / (boundaryRightN - thresholdRightN)) * (-1 - 0) + 0;
+            return true;
+        }
+        else if (angleDiffZ >= thresholdRightP)
+        {
+            Output = ((angleDiffZ - thresholdRightP) / (boundaryRightP - thresholdRightP)) * ( 1 - 0) + 0;
+            return true;
+        }
+
+        return false;
+    }
+
     bool InputYaw(ref float Output)
     {
         currentCameraRotationQuat = this.transform.rotation;
@@ -159,56 +250,87 @@ public class CameraTransformScript : MonoBehaviour {
         // get the signed difference in these angles
         float angleDiffY = Mathf.DeltaAngle(angleA, angleB);
 
-        angleDiffY = Mathf.Clamp(angleDiffY, boundaryRightN, boundaryRightP);
-        if (angleDiffY <= thresholdRightN)
+        angleDiffY = Mathf.Clamp(angleDiffY, boundaryYawN, boundaryYawP);
+        if (angleDiffY <= thresholdYawN)
         {
             //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
-            Output = ((angleDiffY - thresholdRightN) / (boundaryRightN - thresholdRightN)) * (-1 - 0) + 0;
+            Output = ((angleDiffY - thresholdYawN) / (boundaryYawN - thresholdYawN)) * (-1 - 0) + 0;
             return true;
         }
-        else if (angleDiffY >= thresholdRightP)
+        else if (angleDiffY >= thresholdYawP)
         {
-            Output = ((angleDiffY - thresholdRightP) / (boundaryRightP - thresholdRightP)) * ( 1 - 0) + 0;
+            Output = ((angleDiffY - thresholdYawP) / (boundaryYawP - thresholdYawP)) * (1 - 0) + 0;
             return true;
         }
 
         return false;
     }
 
-    bool InputRight(ref float Output)
-    {
-        // get a numeric angle for Z vector               
-        angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
-        float angleDiffZ = angleA;
-
-        angleDiffZ = Mathf.Clamp(angleDiffZ, boundaryYawN, boundaryYawP);
-        if (angleDiffZ <= thresholdYawN)
-        {
-            //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
-            Output = ((angleDiffZ - thresholdYawN) / (boundaryYawN - thresholdYawN)) * (-1 - 0) + 0;
-            return true;
-        }
-        else if (angleDiffZ >= thresholdYawP)
-        {
-            Output = ((angleDiffZ - thresholdYawP) / (boundaryYawP - thresholdYawP)) * ( 1 - 0) + 0;
-            return true;
-        }
-
-        return false;
-    }
+    /* -------------------- // Methods for rotation change // -------------------- */
 
     bool InputPitch(ref float Output)
     {
+        currentCameraPosition = this.transform.position;
+        currentCameraPosition.y *= -1;
+        float testingDifference = currentCameraPosition.z - averageCameraPosition.z;
+
+        testingDifference = Mathf.Clamp(testingDifference, boundaryPitchN, boundaryPitchP);
+        if (testingDifference <= thresholdPitchN)
+        {
+            //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+            Output = ((testingDifference - thresholdPitchN) / (boundaryPitchN - thresholdPitchN)) * (-1 - 0) + 0;
+            return true;
+        }
+        else if (testingDifference >= thresholdPitchP)
+        {
+            Output = ((testingDifference - thresholdPitchP) / (boundaryPitchP - thresholdPitchP)) * ( 1 - 0) + 0;
+            return true;
+        }
+
         return false;
     }
 
     bool InputRoll(ref float Output)
     {
+        currentCameraPosition = this.transform.position;
+        currentCameraPosition.y *= -1;
+        float testingDifference = currentCameraPosition.x - averageCameraPosition.x;
+
+        testingDifference = Mathf.Clamp(testingDifference, boundaryRollN, boundaryRollP);
+        if (testingDifference <= thresholdRollN)
+        {
+            //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+            Output = ((testingDifference - thresholdRollN) / (boundaryRollN - thresholdRollN)) * (-1 - 0) + 0;
+            return true;
+        }
+        else if (testingDifference >= thresholdRollP)
+        {
+            Output = ((testingDifference - thresholdRollP) / (boundaryRollP - thresholdRollP)) * (1 - 0) + 0;
+            return true;
+        }
+
         return false;
     }
 
     bool InputUpward(ref float Output)
     {
+        currentCameraPosition = this.transform.position;
+        currentCameraPosition.y *= -1;
+        float testingDifference = currentCameraPosition.y - averageCameraPosition.y;
+
+        testingDifference = Mathf.Clamp(testingDifference, boundaryUpwardN, boundaryUpwardP);
+        if (testingDifference <= thresholdUpwardN)
+        {
+            //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
+            Output = ((testingDifference - thresholdUpwardN) / (boundaryUpwardN - thresholdUpwardN)) * (-1 - 0) + 0;
+            return true;
+        }
+        else if (testingDifference >= thresholdUpwardP)
+        {
+            Output = ((testingDifference - thresholdUpwardP) / (boundaryUpwardP - thresholdUpwardP)) * (1 - 0) + 0;
+            return true;
+        }
+
         return false;
     }
 
