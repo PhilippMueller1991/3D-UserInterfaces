@@ -9,10 +9,14 @@ public class CameraTransformScript : MonoBehaviour {
     public Quaternion currentCameraRotationQuat;
     public Vector3 currentCameraPosition;
 
+    ARMarker trackedMarker;
+
     Vector3 forwardA;
     Vector3 forwardB;
     float angleA;
     float angleB;
+
+    public float rawAngleAroundX, rawAngleAroundZ, rawAngleAroundY;
 
     public float angleForward;
     public float angleRight;
@@ -92,6 +96,8 @@ void Start () {
         minX = minY = minZ =  100;
         maxX = maxY = maxZ = -100;
         currentCameraPosition = Vector3.zero;
+
+        trackedMarker = null;
     }
 	
 	// Update is called once per frame
@@ -99,17 +105,19 @@ void Start () {
         
         float output = angleForward = angleRight = angleYaw = positionPitch = positionRoll = positionUpward = 0;
 
-        if(InputForward(ref output))
+        currentCameraRotationQuat = this.transform.rotation;
+
+        if (InputForward(ref output))
         {
             angleForward = output;
         }
         
-        if(InputRight(ref output))
+        if (InputRight(ref output))
         {
             angleRight = output;
         }
 
-        if(InputYaw(ref output))
+        if (InputYaw(ref output))
         {
             angleYaw = output;
         }
@@ -147,7 +155,7 @@ void Start () {
         // Remember these min/max values and set Boundaries for Pitch, Roll and Upward.
         // Threshold being determined by a weighted percentage between boundary and center towards averageCameraPositions
         // For now, just press Backspace to copy the values after calibrating.
-        if(Input.GetKeyDown(KeyCode.Backspace))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             foreach (GameObject coordinate in coordinateSystemCheck)
             {
@@ -155,7 +163,7 @@ void Start () {
             }
 
             float boundaryFactor = 0.9f;  // How close the boundary value should be on the respective min/max values
-            float thresholdFactor = 0.3f; // How close the threshold value should be on the average center position
+            float thresholdFactor = 0.5f; // How close the threshold value should be on the average center position
 
             boundaryPitchP  = (maxZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
             boundaryPitchN  = (minZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
@@ -174,17 +182,30 @@ void Start () {
 
         // End TODO
 
+        currentCameraPosition = this.transform.position;
+
+        // Adjustment of the camera
+        if (trackedMarker != null)
+        {
+            Quaternion adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward) *
+                                    Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right) *
+                                    Quaternion.AngleAxis(-rawAngleAroundY, Vector3.up);
+            currentCameraPosition = (adjustment * (currentCameraPosition - trackedMarker.transform.position)) + averageCameraPosition;
+        }
+
+        currentCameraPosition.y *= -1;
+
         if (InputPitch(ref output))
         {
             positionPitch = output;
         }
 
-        if(InputRoll(ref output))
+        if (InputRoll(ref output))
         {
             positionRoll = output;
         }
 
-        if(InputUpward(ref output))
+        if (InputUpward(ref output))
         {
             positionUpward = output;
         }
@@ -193,9 +214,10 @@ void Start () {
 
     /* -------------------- // Methods for position change // -------------------- */
 
+    // Get the current camera rotation in Quaternion before calling this method.
     bool InputForward(ref float Output)
     {
-        currentCameraRotationQuat = this.transform.rotation;
+        //currentCameraRotationQuat = this.transform.rotation;
 
         // get a "forward vector" for each rotation
         forwardA = currentCameraRotationQuat * Vector3.forward;
@@ -208,6 +230,7 @@ void Start () {
         // get the signed difference in these angles
         float angleDiffX = Mathf.DeltaAngle(angleA, angleB);
 
+        rawAngleAroundX = angleDiffX;
         angleDiffX = Mathf.Clamp(angleDiffX, boundaryForwardN, boundaryForwardP);
         
         if (angleDiffX <= thresholdForwardN)
@@ -225,12 +248,14 @@ void Start () {
         return false;
     }
 
+    // Get the current camera rotation in Quaternion before calling this method.
     bool InputRight(ref float Output)
     {
         // get a numeric angle for Z vector               
         angleA = transform.rotation.eulerAngles.z < 180 ? -transform.rotation.eulerAngles.z : Mathf.Abs(transform.rotation.eulerAngles.z - 360);
         float angleDiffZ = angleA;
 
+        rawAngleAroundZ = angleDiffZ;
         angleDiffZ = Mathf.Clamp(angleDiffZ, boundaryRightN, boundaryRightP);
         if (angleDiffZ <= thresholdRightN)
         {
@@ -247,9 +272,10 @@ void Start () {
         return false;
     }
 
+    // Get the current camera rotation in Quaternion before calling this method.
     bool InputYaw(ref float Output)
     {
-        currentCameraRotationQuat = this.transform.rotation;
+        //currentCameraRotationQuat = this.transform.rotation;
 
         // get a "forward vector" for each rotation
         forwardA = currentCameraRotationQuat * Vector3.forward;
@@ -262,6 +288,7 @@ void Start () {
         // get the signed difference in these angles
         float angleDiffY = Mathf.DeltaAngle(angleA, angleB);
 
+        rawAngleAroundY = angleDiffY;
         angleDiffY = Mathf.Clamp(angleDiffY, boundaryYawN, boundaryYawP);
         if (angleDiffY <= thresholdYawN)
         {
@@ -280,10 +307,9 @@ void Start () {
 
     /* -------------------- // Methods for rotation change // -------------------- */
 
+    // Get the current camera position with fixed y-axis before calling this method.
     bool InputPitch(ref float Output)
     {
-        currentCameraPosition = this.transform.position;
-        currentCameraPosition.y *= -1;
         float testingDifference = currentCameraPosition.z; // - averageCameraPosition.z;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryPitchN, boundaryPitchP);
@@ -302,10 +328,9 @@ void Start () {
         return false;
     }
 
+    // Get the current camera position with fixed y-axis before calling this method.
     bool InputRoll(ref float Output)
     {
-        currentCameraPosition = this.transform.position;
-        currentCameraPosition.y *= -1;
         float testingDifference = currentCameraPosition.x; // - averageCameraPosition.x;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryRollN, boundaryRollP);
@@ -324,10 +349,9 @@ void Start () {
         return false;
     }
 
+    // Get the current camera position with fixed y-axis before calling this method.
     bool InputUpward(ref float Output)
     {
-        currentCameraPosition = this.transform.position;
-        currentCameraPosition.y *= -1;
         float testingDifference = currentCameraPosition.y; // - averageCameraPosition.y;
 
         testingDifference = Mathf.Clamp(testingDifference, boundaryUpwardN, boundaryUpwardP);
@@ -344,6 +368,11 @@ void Start () {
         }
 
         return false;
+    }
+
+    void OnMarkerTracked(ARMarker marker)
+    {
+        trackedMarker = marker;
     }
 
 
