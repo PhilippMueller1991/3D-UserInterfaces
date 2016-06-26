@@ -190,7 +190,7 @@ void Start () {
             Quaternion adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward) *
                                     Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right) *
                                     Quaternion.AngleAxis(-rawAngleAroundY, Vector3.up);
-            currentCameraPosition = (adjustment * (currentCameraPosition - trackedMarker.transform.position)) + averageCameraPosition;
+            currentCameraPosition = (adjustment * (currentCameraPosition - trackedMarker.transform.position)) + trackedMarker.transform.position;
         }
 
         currentCameraPosition.y *= -1;
