@@ -7,6 +7,8 @@ public class CameraTransformScript : MonoBehaviour {
     public GameObject[] coordinateSystemCheck;
 
     public Quaternion currentCameraRotationQuat;
+    public Vector4 addedCameraRotationsQuat;
+    public Quaternion averageCameraRotationQuat;
     public Vector3 currentCameraPosition;
 
     ARMarker trackedMarker;
@@ -15,6 +17,8 @@ public class CameraTransformScript : MonoBehaviour {
     Vector3 forwardB;
     float angleA;
     float angleB;
+
+    public float handleLength;
 
     public float rawAngleAroundX, rawAngleAroundZ, rawAngleAroundY;
 
@@ -60,11 +64,13 @@ public class CameraTransformScript : MonoBehaviour {
     public Vector3 addedCameraPositions = Vector3.zero;
     public Vector3 averageCameraPosition;
     //Vector3[] multipleVectors new Vector3[totalAmount];
- 
+
+    Transform cameraTrans;
 
 
-// Use this for initialization
-void Start () {
+
+    // Use this for initialization
+    void Start () {
         // Amount of degrees needed to register movement
         thresholdForwardP =  20f;
         thresholdForwardN = -20f;
@@ -80,18 +86,18 @@ void Start () {
         thresholdUpwardN  = -20f;
 
         // Boundary Degrees capping the resulting values
-        boundaryForwardP  =  45f;
-        boundaryForwardN  = -45f;
-        boundaryRightP    =  45f;
-        boundaryRightN    = -45f;
-        boundaryYawP      =  45f;
-        boundaryYawN      = -45f;
-        boundaryPitchP    =  45f;
-        boundaryPitchN    = -45f;
-        boundaryRollP     =  45f;
-        boundaryRollN     = -45f;
-        boundaryUpwardP   =  45f;
-        boundaryUpwardN   = -45f;
+        boundaryForwardP  =  35f;
+        boundaryForwardN  = -35f;
+        boundaryRightP    =  35f;
+        boundaryRightN    = -35f;
+        boundaryYawP      =  35f;
+        boundaryYawN      = -35f;
+        boundaryPitchP    =  35f;
+        boundaryPitchN    = -35f;
+        boundaryRollP     =  35f;
+        boundaryRollN     = -35f;
+        boundaryUpwardP   =  35f;
+        boundaryUpwardN   = -35f;
 
         minX = minY = minZ =  100;
         maxX = maxY = maxZ = -100;
@@ -126,6 +132,8 @@ void Start () {
         addedCameraPositions += currentCameraPosition;
         averageCameraPosition = addedCameraPositions / (float)Mathf.Abs(addAmount);
 
+        //averageCameraRotationQuat = AverageQuaternion(ref addedCameraRotationsQuat, currentCameraRotationQuat, averageCameraRotationQuat, addAmount);
+
         maxX = currentCameraPosition.x > maxX ? currentCameraPosition.x : maxX;
         maxY = currentCameraPosition.y > maxY ? currentCameraPosition.y : maxY;
         maxZ = currentCameraPosition.z > maxZ ? currentCameraPosition.z : maxZ;
@@ -144,6 +152,8 @@ void Start () {
 
             addAmount = 0;
             addedCameraPositions = Vector3.zero;
+            addedCameraRotationsQuat = Vector4.zero;
+            averageCameraRotationQuat = currentCameraRotationQuat;
 
             foreach (GameObject coordinate in coordinateSystemCheck)
             {
@@ -183,17 +193,63 @@ void Start () {
         // End TODO
 
         currentCameraPosition = this.transform.position;
+        //currentCameraPosition.y *= -1;
 
-        // Adjustment of the camera
+        /*
         if (trackedMarker != null)
         {
-            Quaternion adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward) *
-                                    Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right) *
-                                    Quaternion.AngleAxis(-rawAngleAroundY, Vector3.up);
-            currentCameraPosition = (adjustment * (currentCameraPosition - trackedMarker.transform.position)) + trackedMarker.transform.position;
+            Debug.Log("Started getting a tracked Marker.");
+            Debug.DrawLine(trackedMarker.transform.position, currentCameraPosition, Color.red);
+            //cameraTrans.RotateAround(trackedMarker.transform.position, Vector3.up, -rawAngleAroundY);
+            
+        }
+        */
+        
+
+
+        // Adjustment of the camera
+
+        if (trackedMarker != null)
+        {
+            Vector3 markerPos = trackedMarker.transform.position - handleLength * Vector3.up;
+            Debug.Log("Started getting a tracked Marker.");
+            Debug.DrawLine(markerPos, currentCameraPosition, Color.black);
+            Vector3 tempVecCam = currentCameraPosition;
+            Quaternion adjustment;
+            
+            
+
+
+            adjustment = Quaternion.AngleAxis(rawAngleAroundY, Vector3.up);
+            currentCameraPosition = (adjustment * (currentCameraPosition - markerPos)) + markerPos;
+            Debug.DrawLine(markerPos, currentCameraPosition, Color.green);
+            currentCameraPosition = tempVecCam;
+            
+            adjustment = Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right);
+            currentCameraPosition = (adjustment * (currentCameraPosition - markerPos)) + markerPos;
+            Debug.DrawLine(markerPos, currentCameraPosition, Color.red);
+            currentCameraPosition = tempVecCam;
+            
+            adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward);
+            currentCameraPosition = (adjustment * (currentCameraPosition - markerPos)) + markerPos;
+            Debug.DrawLine(markerPos, currentCameraPosition, Color.blue);
+            currentCameraPosition = tempVecCam;
+
+
+
+            adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward) *
+                         Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right) *
+                         Quaternion.AngleAxis(-rawAngleAroundY, Vector3.up);
+
+            adjustment = Quaternion.Inverse(Quaternion.Inverse(averageCameraRotationQuat) * currentCameraRotationQuat);
+
+            currentCameraPosition = (adjustment * (currentCameraPosition - markerPos)) + markerPos;
+            Debug.DrawLine(markerPos, currentCameraPosition, Color.white);
         }
 
         currentCameraPosition.y *= -1;
+
+
 
         if (InputPitch(ref output))
         {
@@ -217,11 +273,10 @@ void Start () {
     // Get the current camera rotation in Quaternion before calling this method.
     bool InputForward(ref float Output)
     {
-        //currentCameraRotationQuat = this.transform.rotation;
-
         // get a "forward vector" for each rotation
         forwardA = currentCameraRotationQuat * Vector3.forward;
         forwardB = Quaternion.identity * Vector3.forward;
+        //forwardB = averageCameraRotationQuat * Vector3.forward;
 
         // get a numeric angle for each vector, on the Y-Z plane (relative to world forward)
         angleA = Mathf.Atan2(forwardA.y, forwardA.z) * Mathf.Rad2Deg;
@@ -244,6 +299,10 @@ void Start () {
             Output = ((angleDiffX - thresholdForwardP) / (boundaryForwardP - thresholdForwardP)) * ( 1 - 0) + 0;
             return true;
         }
+
+        /* -------------------- // Alternative // -------------------- */
+
+        
 
         return false;
     }
@@ -280,6 +339,7 @@ void Start () {
         // get a "forward vector" for each rotation
         forwardA = currentCameraRotationQuat * Vector3.forward;
         forwardB = Quaternion.identity * Vector3.forward;
+        //forwardB = averageCameraRotationQuat * Vector3.forward;
 
         // get a numeric angle for each vector, on the X-Z plane (relative to world forward)
         angleA = Mathf.Atan2(forwardA.x, forwardA.z) * Mathf.Rad2Deg;
@@ -372,6 +432,7 @@ void Start () {
 
     void OnMarkerTracked(ARMarker marker)
     {
+        Debug.Log("OnMarkerTracked");
         trackedMarker = marker;
     }
 
