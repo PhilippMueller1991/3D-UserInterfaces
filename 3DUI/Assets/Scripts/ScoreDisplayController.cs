@@ -13,10 +13,10 @@ public class ScoreDisplayController : MonoBehaviour
         PlayerController.m_instance.OnScoreChanged += DisplayScore;	    
 	}
 
-    void OnDestroy()
-    {
-        PlayerController.m_instance.OnScoreChanged -= DisplayScore;
-    }
+    //void OnDestroy()
+    //{
+    //    PlayerController.m_instance.OnScoreChanged -= DisplayScore;
+    //}
 
     void DisplayScore(uint score)
     {

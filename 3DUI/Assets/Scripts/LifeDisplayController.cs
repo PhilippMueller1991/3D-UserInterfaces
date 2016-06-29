@@ -13,10 +13,10 @@ public class LifeDisplayController : MonoBehaviour
         PlayerController.m_instance.OnLifeChanged += DisplayLife;
     }
 
-    void OnDestroy()
-    {
-        PlayerController.m_instance.OnLifeChanged -= DisplayLife;
-    }
+    //void OnDestroy()
+    //{
+    //    PlayerController.m_instance.OnLifeChanged -= DisplayLife;
+    //}
 
     void DisplayLife(uint life)
     {
