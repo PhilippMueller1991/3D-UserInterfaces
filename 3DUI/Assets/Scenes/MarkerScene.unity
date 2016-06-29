@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   secondsToRemainVisible: 0
-  eventReceiver: {fileID: 0}
+  eventReceiver: {fileID: 614231944}
   _markerTag: marker0
 --- !u!4 &193469321 stripped
 Transform:
@@ -489,10 +489,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coordinateSystemCheck:
-  - {fileID: 1172630733}
   - {fileID: 811244285}
+  - {fileID: 1172630733}
   currentCameraRotationQuat: {x: 0, y: 0, z: 0, w: 0}
+  addedCameraRotationsQuat: {x: 0, y: 0, z: 0, w: 0}
+  averageCameraRotationQuat: {x: 0, y: 0, z: 0, w: 0}
   currentCameraPosition: {x: 0, y: 0, z: 0}
+  handleLength: 0
+  rawAngleAroundX: 0
+  rawAngleAroundZ: 0
+  rawAngleAroundY: 0
   angleForward: 0
   angleRight: 0
   angleYaw: 0
