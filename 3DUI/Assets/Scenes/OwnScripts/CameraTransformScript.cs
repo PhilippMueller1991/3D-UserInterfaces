@@ -56,9 +56,14 @@ public class CameraTransformScript : MonoBehaviour {
     public float boundaryUpwardP;
     public float boundaryUpwardN;
 
+    public float maxForward, minForward;
+    public float maxRight, minRight;
+    public float maxRotate, minRotate;
     public float maxX, minX;
     public float maxY, minY;
     public float maxZ, minZ;
+
+    public bool calibrateRotations;
 
     public int addAmount = 0;
     public Vector3 addedCameraPositions = Vector3.zero;
@@ -99,11 +104,14 @@ public class CameraTransformScript : MonoBehaviour {
         boundaryUpwardP   =  35f;
         boundaryUpwardN   = -35f;
 
-        minX = minY = minZ =  100;
-        maxX = maxY = maxZ = -100;
+        minX = minY = minZ = minForward = minRight = minRotate =  100;
+        maxX = maxY = maxZ = maxForward = maxRight = maxRotate = -100;
         currentCameraPosition = Vector3.zero;
 
         trackedMarker = null;
+        handleLength = 0.1f;
+
+        calibrateRotations = false;
     }
 	
 	// Update is called once per frame
@@ -134,6 +142,13 @@ public class CameraTransformScript : MonoBehaviour {
 
         //averageCameraRotationQuat = AverageQuaternion(ref addedCameraRotationsQuat, currentCameraRotationQuat, averageCameraRotationQuat, addAmount);
 
+        maxForward = rawAngleAroundX > maxForward ? rawAngleAroundX : maxForward;
+        maxRight = rawAngleAroundZ > maxRight ? rawAngleAroundZ : maxRight;
+        maxRotate = rawAngleAroundY > maxRotate ? rawAngleAroundY : maxRotate;
+        minForward = rawAngleAroundX < minForward ? rawAngleAroundX : minForward;
+        minRight = rawAngleAroundZ < minRight ? rawAngleAroundZ : minRight;
+        minRotate = rawAngleAroundY < minRotate ? rawAngleAroundY : minRotate;
+
         maxX = currentCameraPosition.x > maxX ? currentCameraPosition.x : maxX;
         maxY = currentCameraPosition.y > maxY ? currentCameraPosition.y : maxY;
         maxZ = currentCameraPosition.z > maxZ ? currentCameraPosition.z : maxZ;
@@ -147,8 +162,8 @@ public class CameraTransformScript : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            minX = minY = minZ = 100;
-            maxX = maxY = maxZ = -100;
+            minX = minY = minZ = minForward = minRight = minRotate = 100;
+            maxX = maxY = maxZ = maxForward = maxRight = maxRotate = -100;
 
             addAmount = 0;
             addedCameraPositions = Vector3.zero;
@@ -174,6 +189,23 @@ public class CameraTransformScript : MonoBehaviour {
 
             float boundaryFactor = 0.9f;  // How close the boundary value should be on the respective min/max values
             float thresholdFactor = 0.5f; // How close the threshold value should be on the average center position
+
+            if (calibrateRotations)
+            {
+                boundaryForwardP = maxForward * boundaryFactor;
+                boundaryForwardN = minForward * boundaryFactor;
+                boundaryRightP = maxRight * boundaryFactor;
+                boundaryRightN = minRight * boundaryFactor;
+                boundaryYawP = maxRotate * boundaryFactor;
+                boundaryYawN = minRotate * boundaryFactor;
+
+                thresholdForwardP = maxForward * thresholdFactor;
+                thresholdForwardN = minForward * thresholdFactor;
+                thresholdRightP = maxRight * thresholdFactor;
+                thresholdRightN = minRight * thresholdFactor;
+                thresholdYawP = maxRotate * thresholdFactor;
+                thresholdYawN = minRotate * thresholdFactor;
+            }
 
             boundaryPitchP  = (maxZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
             boundaryPitchN  = (minZ - averageCameraPosition.z) * boundaryFactor + averageCameraPosition.z;
