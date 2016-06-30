@@ -6,6 +6,8 @@ public class CameraTransformScript : MonoBehaviour {
 
     public GameObject[] coordinateSystemCheck;
 
+    public JoystickDisplay joystickDisplay;
+
     public Quaternion currentCameraRotationQuat;
     public Vector4 addedCameraRotationsQuat;
     public Quaternion averageCameraRotationQuat;
@@ -113,6 +115,8 @@ public class CameraTransformScript : MonoBehaviour {
 
         calibrateRotations = false;
     }
+
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -297,6 +301,10 @@ public class CameraTransformScript : MonoBehaviour {
         {
             positionUpward = output;
         }
+
+
+        joystickDisplay.DisplayRotation(currentCameraRotationQuat);
+        joystickDisplay.DisplayMovement(currentCameraPosition);
         
     }
 
