@@ -233,16 +233,16 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 289257520}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.7071069, y: 0, z: 0, w: 0.70710677}
+  m_LocalPosition: {x: 0, y: -0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
   m_Children:
   - {fileID: 225218165}
   - {fileID: 1895509627}
   - {fileID: 1831099696}
   - {fileID: 637415624}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 614231945}
   m_RootOrder: 2
 --- !u!114 &289257522
 MonoBehaviour:
@@ -344,6 +344,8 @@ MonoBehaviour:
   oldPitch: 0
   oldRoll: 0
   oldUpward: 0
+  virtualWorldPos: {x: 0, y: 0, z: 0}
+  virtualWorldRot: {x: 0, y: 0, z: 0, w: 0}
   startTracking: 0
 --- !u!1 &491961364
 GameObject:
@@ -441,6 +443,7 @@ Transform:
   m_Children:
   - {fileID: 1379521059}
   - {fileID: 1172630735}
+  - {fileID: 289257521}
   m_Father: {fileID: 1277133540}
   m_RootOrder: 0
 --- !u!81 &614231946
@@ -494,7 +497,7 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
@@ -903,7 +906,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400750, guid: d1f560ccd42ca47448b2ac89a9e2a3a5, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 22400750, guid: d1f560ccd42ca47448b2ac89a9e2a3a5, type: 2}
       propertyPath: m_AnchoredPosition.x

@@ -24,8 +24,8 @@ public class SpaceshipMovementScript : MonoBehaviour
     Vector3 startLocalPosition;
     Quaternion startLocalRotation;
 
-    Vector3 virtualWorldPos;
-    Quaternion virtualWorldRot;
+    public Vector3 virtualWorldPos;
+    public Quaternion virtualWorldRot;
 
     public bool startTracking;
 
@@ -42,7 +42,7 @@ public class SpaceshipMovementScript : MonoBehaviour
         VirtualWorldRot = Quaternion.identity;
 
         speedPos = 0.1f;
-        speedRot = 20f;
+        speedRot = 1f;
         maxVelocity = 1f;
         velocity = Vector3.zero;
         velocityDamping = 0.5f;
@@ -78,7 +78,8 @@ public class SpaceshipMovementScript : MonoBehaviour
 
             VirtualWorldPos += velocity;
             VirtualWorldRot = Quaternion.Euler(addRot) * VirtualWorldRot;
-            //VirtualWorldPos = VirtualWorldRot * VirtualWorldPos;
+            VirtualWorldRot = Quaternion.Lerp(VirtualWorldRot, Quaternion.Inverse(VirtualWorldRot) * VirtualWorldRot, Time.deltaTime);
+            //VirtualWorldRot = Quaternion.Inverse(VirtualWorldRot)
 
 
             oldForward  = InputValues.GetForward()  * alphaBlend + oldForward   * (1 - alphaBlend);
