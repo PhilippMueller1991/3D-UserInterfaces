@@ -8,10 +8,10 @@ public class CameraTransformScript : MonoBehaviour {
 
     public JoystickDisplay joystickDisplay;
 
-    public Quaternion currentCameraRotationQuat;
-    public Vector4 addedCameraRotationsQuat;
-    public Quaternion averageCameraRotationQuat;
-    public Vector3 currentCameraPosition;
+    Quaternion currentCameraRotationQuat;
+    Vector4 addedCameraRotationsQuat;
+    Quaternion averageCameraRotationQuat;
+    Vector3 currentCameraPosition;
 
     ARMarker trackedMarker;
 
@@ -67,9 +67,9 @@ public class CameraTransformScript : MonoBehaviour {
 
     public bool calibrateRotations;
 
-    public int addAmount = 0;
-    public Vector3 addedCameraPositions = Vector3.zero;
-    public Vector3 averageCameraPosition;
+    int addAmount = 0;
+    Vector3 addedCameraPositions = Vector3.zero;
+    Vector3 averageCameraPosition;
     //Vector3[] multipleVectors new Vector3[totalAmount];
 
     Transform cameraTrans;
@@ -252,9 +252,8 @@ public class CameraTransformScript : MonoBehaviour {
             Debug.DrawLine(markerPos, currentCameraPosition, Color.black);
             Vector3 tempVecCam = currentCameraPosition;
             Quaternion adjustment;
-            
-            
 
+            /*
 
             adjustment = Quaternion.AngleAxis(rawAngleAroundY, Vector3.up);
             currentCameraPosition = (adjustment * (currentCameraPosition - markerPos)) + markerPos;
@@ -276,6 +275,8 @@ public class CameraTransformScript : MonoBehaviour {
             adjustment = Quaternion.AngleAxis(-rawAngleAroundZ, Vector3.forward) *
                          Quaternion.AngleAxis(-rawAngleAroundX, Vector3.right) *
                          Quaternion.AngleAxis(-rawAngleAroundY, Vector3.up);
+
+            */
 
             adjustment = Quaternion.Inverse(Quaternion.Inverse(averageCameraRotationQuat) * currentCameraRotationQuat);
 
@@ -470,14 +471,45 @@ public class CameraTransformScript : MonoBehaviour {
         return false;
     }
 
+    /* -------------------- // Methods for Value retrieval // -------------------- */
+
+    float GetForward()
+    {
+        return angleForward;
+    }
+
+    float GetRight()
+    {
+        return angleRight;
+    }
+
+    float GetYaw()
+    {
+        return angleYaw;
+    }
+
+    float GetPitch()
+    {
+        return positionPitch;
+    }
+
+    float GetRoll()
+    {
+        return positionRoll;
+    }
+
+    float GetUpward()
+    {
+        return positionUpward;
+    }
+
+    /* -------------------- // Start helper functions // -------------------- */
+
     void OnMarkerTracked(ARMarker marker)
     {
         Debug.Log("OnMarkerTracked");
         trackedMarker = marker;
     }
-
-
-
 
     //Get an average (mean) from more then two quaternions (with two, slerp would be used).
     //Note: this only works if all the quaternions are relatively close together.
