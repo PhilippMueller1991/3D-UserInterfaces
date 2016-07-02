@@ -19,6 +19,7 @@ public class SpaceshipMovementScript : MonoBehaviour
     float speedRot;
     float maxVelocity;
     Vector3 velocity;
+    float velocityDamping;
 
     Vector3 startLocalPosition;
     Quaternion startLocalRotation;
@@ -37,11 +38,14 @@ public class SpaceshipMovementScript : MonoBehaviour
 
         alphaBlend = 0.025f;
 
-        virtualWorldPos = Vector3.zero;
-        virtualWorldRot = Quaternion.identity;
+        VirtualWorldPos = Vector3.zero;
+        VirtualWorldRot = Quaternion.identity;
 
-        speedPos = 100;
-        speedRot = 100;
+        speedPos = 0.1f;
+        speedRot = 20f;
+        maxVelocity = 1f;
+        velocity = Vector3.zero;
+        velocityDamping = 0.5f;
 
         startTracking = false;
     }
@@ -62,8 +66,20 @@ public class SpaceshipMovementScript : MonoBehaviour
             addPos *= speedPos * Time.deltaTime;
             addRot *= speedRot * Time.deltaTime;
 
-            virtualWorldPos += addPos;
-            virtualWorldRot = Quaternion.Euler(addRot) * virtualWorldRot;
+            velocity *= Mathf.Pow(velocityDamping, Time.deltaTime);
+            velocity = Quaternion.Euler(addRot) * velocity;
+
+            velocity += addPos;
+            if (velocity.magnitude >= maxVelocity)
+            {
+                velocity.Normalize();
+                velocity *= maxVelocity;
+            }
+
+            VirtualWorldPos += velocity;
+            VirtualWorldRot = Quaternion.Euler(addRot) * VirtualWorldRot;
+            //VirtualWorldPos = VirtualWorldRot * VirtualWorldPos;
+
 
             oldForward  = InputValues.GetForward()  * alphaBlend + oldForward   * (1 - alphaBlend);
             oldRight    = InputValues.GetRight()    * alphaBlend + oldRight     * (1 - alphaBlend);
@@ -85,8 +101,6 @@ public class SpaceshipMovementScript : MonoBehaviour
 
             Quaternion rotation = Quaternion.AngleAxis(rotX, Vector3.right) * Quaternion.AngleAxis(-rotZ, Vector3.forward) * Quaternion.AngleAxis(rotY, Vector3.up);
             transform.localRotation = rotation * startLocalRotation;
-            //transform.localEulerAngles = new Vector3(oldPitch, oldRoll, oldYaw);
-            //transform.localEulerAngles = new Vector3(0, 0, 1f*Time.deltaTime);
         }
     }
 
@@ -94,5 +108,23 @@ public class SpaceshipMovementScript : MonoBehaviour
     {
         get { return startTracking; }
         set { startTracking = value; }
+    }
+
+    public Vector3 VirtualWorldPos
+    {
+        get { return virtualWorldPos; }
+        private set
+        {
+            virtualWorldPos = value;
+        }
+    }
+
+    public Quaternion VirtualWorldRot
+    {
+        get { return virtualWorldRot; }
+        private set
+        {
+            virtualWorldRot = value;
+        }
     }
 }
