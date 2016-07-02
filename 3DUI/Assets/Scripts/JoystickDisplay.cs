@@ -4,6 +4,8 @@ using System.Collections;
 
 public class JoystickDisplay : MonoBehaviour {
 
+    public CameraTransformScript m_ar;
+
     public Image m_rotateX;
     public Image m_rotateY;
     public Image m_rotateZ;
@@ -14,6 +16,7 @@ public class JoystickDisplay : MonoBehaviour {
     public Image m_movementRight;
     public Image m_movementForward;
     public Image m_movementBackward;
+
 
     void Start()
     {
@@ -50,8 +53,13 @@ public class JoystickDisplay : MonoBehaviour {
 
     void Update()
     {
-        DisplayRotation(new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Vertical"), Input.GetAxis("Vertical")));
-        DisplayMovement(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetKey(KeyCode.Q) ? -1 : Input.GetKey(KeyCode.E) ? 1 : 0));
+        //DisplayRotation(new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Vertical"), Input.GetAxis("Vertical")));
+        //DisplayMovement(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetKey(KeyCode.Q) ? -1 : Input.GetKey(KeyCode.E) ? 1 : 0));
+        
+        Vector3 rot = new Vector3(m_ar.GetYaw(), m_ar.GetPitch(), m_ar.GetRoll());
+        Vector3 movement = new Vector3(m_ar.GetRight(), m_ar.GetUpward(), m_ar.GetForward());
+        DisplayRotation(rot);
+        DisplayMovement(movement);
     }
 
     // aux methods
