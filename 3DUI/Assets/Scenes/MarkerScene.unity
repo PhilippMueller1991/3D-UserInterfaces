@@ -322,6 +322,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InputValues: {fileID: 614231951}
+  oldForward: 0
+  oldRight: 0
+  oldYaw: 0
+  oldPitch: 0
+  oldRoll: 0
+  oldUpward: 0
   startTracking: 0
 --- !u!1 &491961364
 GameObject:
@@ -458,7 +464,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0

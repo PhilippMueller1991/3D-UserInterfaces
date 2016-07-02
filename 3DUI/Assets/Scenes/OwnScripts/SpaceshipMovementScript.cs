@@ -73,8 +73,8 @@ public class SpaceshipMovementScript : MonoBehaviour
             oldUpward   = InputValues.GetUpward()   * alphaBlend + oldUpward    * (1 - alphaBlend);
 
             //new_value = ( (old_value  - old_min)  / (old_max - old_min) ) * (new_max - new_min)   + new_min
-            float posZ  = ((oldForward  - (-1f))    /       (1f - (-1f)))   *   (0.49f - 0.39f)     + 0.39f;    // PosZ
-            float posY  = ((oldUpward   - (-1f))    /       (1f - (-1f)))   *   (0f  - (-0.16f))    + (-0.16f); // PosY
+            float posZ  = ((oldForward  - (-1f))    /       (1f - (-1f)))   *   (0.5f - 0.3f)       + 0.3f;     // PosZ
+            float posY  = ((oldUpward   - (-1f))    /       (1f - (-1f)))   *   (0f  - (-0.12f))    + (-0.12f); // PosY
             float posX  = ((oldRight    - (-1f))    /       (1f - (-1f)))   *   (0.1f - (-0.1f))    + (-0.1f);  // PosX
 
             transform.localPosition = new Vector3(posX, posY, posZ);
