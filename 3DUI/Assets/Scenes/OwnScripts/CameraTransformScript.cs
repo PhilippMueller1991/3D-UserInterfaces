@@ -6,7 +6,9 @@ public class CameraTransformScript : MonoBehaviour {
 
     public GameObject[] coordinateSystemCheck;
 
-    public JoystickDisplay joystickDisplay;
+    //public JoystickDisplay joystickDisplay;
+
+    public SpaceshipMovementScript shipMovement;
 
     Quaternion currentCameraRotationQuat;
     Vector4 addedCameraRotationsQuat;
@@ -165,6 +167,8 @@ public class CameraTransformScript : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            shipMovement.StartTracking = false;
+
             minX = minY = minZ = minForward = minRight = minRotate = 100;
             maxX = maxY = maxZ = maxForward = maxRight = maxRotate = -100;
 
@@ -185,6 +189,8 @@ public class CameraTransformScript : MonoBehaviour {
         // For now, just press Backspace to copy the values after calibrating.
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            shipMovement.StartTracking = true;
+
             foreach (GameObject coordinate in coordinateSystemCheck)
             {
                 coordinate.SetActive(false);
