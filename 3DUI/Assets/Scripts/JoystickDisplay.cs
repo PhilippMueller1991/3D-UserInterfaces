@@ -34,12 +34,11 @@ public class JoystickDisplay : MonoBehaviour {
         m_movementBackward.color= c;
     }
 
-    public void DisplayRotation(Quaternion rot)
+    public void DisplayRotation(Vector3 rot)
     {
-        Vector3 r = rot.eulerAngles;
-        UpdateRotationImage(m_rotateX, r.x);
-        UpdateRotationImage(m_rotateY, r.y);
-        UpdateRotationImage(m_rotateZ, r.z);
+        UpdateRotationImage(m_rotateX, rot.x);
+        UpdateRotationImage(m_rotateY, rot.y);
+        UpdateRotationImage(m_rotateZ, rot.z);
     }
 
     public void DisplayMovement(Vector3 movement)
@@ -49,25 +48,24 @@ public class JoystickDisplay : MonoBehaviour {
         UpdateMovementImages(m_movementForward, m_movementBackward, movement.z);
     }
 
-    //void Update()
-    //{
-    //    DisplayRotation(Quaternion.Euler(180.0f * new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Vertical"), Input.GetAxis("Vertical"))));
-    //    DisplayMovement(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetKey(KeyCode.Q) ? -1 : Input.GetKey(KeyCode.E) ? 1 : 0));
-    //}
+    void Update()
+    {
+        DisplayRotation(new Vector3(Input.GetAxis("Vertical"), Input.GetAxis("Vertical"), Input.GetAxis("Vertical")));
+        DisplayMovement(new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), Input.GetKey(KeyCode.Q) ? -1 : Input.GetKey(KeyCode.E) ? 1 : 0));
+    }
 
     // aux methods
     private void UpdateRotationImage(Image img, float axisAngle)
     {
-        axisAngle -= 180.0f;
         Color c;
-        if (axisAngle > 20.0f)
+        if (axisAngle > 0.1f)
         {
             img.GetComponent<RectTransform>().localScale = new Vector3(-1, 1, 1);
             c = img.color;
             c.a = 1.0f;
             img.color = c;
         }
-        else if (axisAngle < 20.0f)
+        else if (axisAngle < -0.1f)
         {
             img.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             c = img.color;
