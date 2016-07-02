@@ -143,7 +143,6 @@ public class CameraTransformScript : MonoBehaviour {
         addAmount++;
         addedCameraPositions += currentCameraPosition;
         averageCameraPosition = addedCameraPositions / (float)Mathf.Abs(addAmount);
-
         //averageCameraRotationQuat = AverageQuaternion(ref addedCameraRotationsQuat, currentCameraRotationQuat, averageCameraRotationQuat, addAmount);
 
         maxForward = rawAngleAroundX > maxForward ? rawAngleAroundX : maxForward;
@@ -171,7 +170,7 @@ public class CameraTransformScript : MonoBehaviour {
 
             addAmount = 0;
             addedCameraPositions = Vector3.zero;
-            addedCameraRotationsQuat = Vector4.zero;
+            //addedCameraRotationsQuat = Vector4.zero;
             averageCameraRotationQuat = currentCameraRotationQuat;
 
             foreach (GameObject coordinate in coordinateSystemCheck)
@@ -250,7 +249,7 @@ public class CameraTransformScript : MonoBehaviour {
             Vector3 markerPos = trackedMarker.transform.position - handleLength * Vector3.up;
             Debug.Log("Started getting a tracked Marker.");
             Debug.DrawLine(markerPos, currentCameraPosition, Color.black);
-            Vector3 tempVecCam = currentCameraPosition;
+            //Vector3 tempVecCam = currentCameraPosition;
             Quaternion adjustment;
 
             /*
@@ -304,8 +303,8 @@ public class CameraTransformScript : MonoBehaviour {
         }
 
 
-        joystickDisplay.DisplayRotation(currentCameraRotationQuat);
-        joystickDisplay.DisplayMovement(currentCameraPosition);
+        //joystickDisplay.DisplayRotation(currentCameraRotationQuat);
+        //joystickDisplay.DisplayMovement(currentCameraPosition);
         
     }
 
@@ -473,32 +472,32 @@ public class CameraTransformScript : MonoBehaviour {
 
     /* -------------------- // Methods for Value retrieval // -------------------- */
 
-    float GetForward()
+    public float GetForward()
     {
         return angleForward;
     }
 
-    float GetRight()
+    public float GetRight()
     {
         return angleRight;
     }
 
-    float GetYaw()
+    public float GetYaw()
     {
         return angleYaw;
     }
 
-    float GetPitch()
+    public float GetPitch()
     {
         return positionPitch;
     }
 
-    float GetRoll()
+    public float GetRoll()
     {
         return positionRoll;
     }
 
-    float GetUpward()
+    public float GetUpward()
     {
         return positionUpward;
     }
