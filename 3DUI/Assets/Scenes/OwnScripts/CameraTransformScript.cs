@@ -247,7 +247,7 @@ public class CameraTransformScript : MonoBehaviour {
         if (trackedMarker != null)
         {
             Vector3 markerPos = trackedMarker.transform.position - handleLength * Vector3.up;
-            Debug.Log("Started getting a tracked Marker.");
+            //Debug.Log("Started getting a tracked Marker.");
             Debug.DrawLine(markerPos, currentCameraPosition, Color.black);
             //Vector3 tempVecCam = currentCameraPosition;
             Quaternion adjustment;
@@ -506,7 +506,7 @@ public class CameraTransformScript : MonoBehaviour {
 
     void OnMarkerTracked(ARMarker marker)
     {
-        Debug.Log("OnMarkerTracked");
+        //Debug.Log("OnMarkerTracked");
         trackedMarker = marker;
     }
 
