@@ -18,8 +18,9 @@ public class SpaceshipMovementScript : MonoBehaviour
     float speedPos;
     float speedRot;
     float maxVelocity;
-    Vector3 velocity;
+    public Vector3 velocity;
     float velocityDamping;
+    float rotationReductionFactor;
 
     Vector3 startLocalPosition;
     Quaternion startLocalRotation;
@@ -41,11 +42,12 @@ public class SpaceshipMovementScript : MonoBehaviour
         VirtualWorldPos = Vector3.zero;
         VirtualWorldRot = Quaternion.identity;
 
-        speedPos = 0.1f;
-        speedRot = 1f;
-        maxVelocity = 1f;
-        velocity = Vector3.zero;
-        velocityDamping = 0.5f;
+        speedPos = 0.025f;
+        speedRot = 2.5f;
+        maxVelocity = 0.1f;
+        Velocity = Vector3.zero;
+        velocityDamping = 0.1f;
+        rotationReductionFactor = 5f;
 
         startTracking = false;
     }
@@ -56,7 +58,7 @@ public class SpaceshipMovementScript : MonoBehaviour
         if(startTracking)
         { 
             Vector3 addPos = new Vector3(InputValues.GetRight(), InputValues.GetUpward(), InputValues.GetForward());
-            Vector3 addRot = new Vector3(InputValues.GetPitch(), InputValues.GetYaw(), InputValues.GetRoll());
+            Vector3 addRot = new Vector3(InputValues.GetPitch(), InputValues.GetYaw(), -InputValues.GetRoll());
 
             if (addPos.magnitude >= 1)
                 addPos.Normalize();
@@ -66,19 +68,20 @@ public class SpaceshipMovementScript : MonoBehaviour
             addPos *= speedPos * Time.deltaTime;
             addRot *= speedRot * Time.deltaTime;
 
-            velocity *= Mathf.Pow(velocityDamping, Time.deltaTime);
-            velocity = Quaternion.Euler(addRot) * velocity;
+            Velocity *= Mathf.Pow(velocityDamping, Time.deltaTime);
+            Velocity = Quaternion.Euler(addRot) * Velocity;
 
-            velocity += addPos;
-            if (velocity.magnitude >= maxVelocity)
+            Velocity += addPos;
+            //Debug.Log("Velocity.magnitute >= maxVelocity: " + Velocity.magnitude + " >= " + maxVelocity + "\taddPos: " + addPos);
+            if (Velocity.magnitude >= maxVelocity)
             {
-                velocity.Normalize();
-                velocity *= maxVelocity;
+                Velocity.Normalize();
+                Velocity *= maxVelocity;
             }
 
-            VirtualWorldPos += velocity;
+            VirtualWorldPos += Velocity;
             VirtualWorldRot = Quaternion.Euler(addRot) * VirtualWorldRot;
-            VirtualWorldRot = Quaternion.Lerp(VirtualWorldRot, Quaternion.Inverse(VirtualWorldRot) * VirtualWorldRot, Time.deltaTime);
+            VirtualWorldRot = Quaternion.Lerp(VirtualWorldRot, Quaternion.Inverse(VirtualWorldRot) * VirtualWorldRot, Time.deltaTime * rotationReductionFactor);
             //VirtualWorldRot = Quaternion.Inverse(VirtualWorldRot)
 
 
@@ -126,6 +129,15 @@ public class SpaceshipMovementScript : MonoBehaviour
         private set
         {
             virtualWorldRot = value;
+        }
+    }
+
+    public Vector3 Velocity
+    {
+        get { return velocity; }
+        private set
+        {
+            velocity = value;
         }
     }
 }

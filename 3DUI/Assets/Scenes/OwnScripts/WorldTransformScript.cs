@@ -24,7 +24,7 @@ public class WorldTransformScript : MonoBehaviour {
 
             //Quaternion adjustment = Quaternion.Inverse(Quaternion.Inverse(previousOrientation) * virtualWorld.VirtualWorldRot);
 
-            transform.position = -virtualWorld.VirtualWorldPos;
+            transform.position -= virtualWorld.Velocity;
         }
     }
 }
