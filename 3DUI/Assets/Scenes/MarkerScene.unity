@@ -349,6 +349,8 @@ MonoBehaviour:
   virtualWorldPos: {x: 0, y: 0, z: 0}
   virtualWorldRot: {x: 0, y: 0, z: 0, w: 0}
   startTracking: 0
+  addPos: {x: 0, y: 0, z: 0}
+  addRot: {x: 0, y: 0, z: 0}
 --- !u!1 &491961364
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,6 +538,7 @@ MonoBehaviour:
   coordinateSystemCheck:
   - {fileID: 811244285}
   - {fileID: 1172630733}
+  - {fileID: 1650768678}
   shipMovement: {fileID: 294635438}
   handleLength: 0
   rawAngleAroundX: 0

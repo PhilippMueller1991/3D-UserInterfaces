@@ -180,6 +180,7 @@ public class CameraTransformScript : MonoBehaviour {
             foreach (GameObject coordinate in coordinateSystemCheck)
             {
                 coordinate.SetActive(true);
+                coordinate.layer = 9;
             }
         }
 
@@ -199,6 +200,7 @@ public class CameraTransformScript : MonoBehaviour {
             foreach (GameObject coordinate in coordinateSystemCheck)
             {
                 coordinate.SetActive(false);
+                coordinate.layer = 0;
             }
 
             float boundaryFactor = 0.9f;  // How close the boundary value should be on the respective min/max values
