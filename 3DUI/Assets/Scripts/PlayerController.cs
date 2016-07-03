@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
     {
         m_life -= (int)damage;
 
+        // TODO: Player game over
+
         if (OnLifeChanged != null)
             OnLifeChanged((uint)m_life);
     }
