@@ -15,7 +15,7 @@ public class Obstacle : MonoBehaviour
         m_rb = GetComponent<Rigidbody>();
         m_rb.isKinematic = m_isKinematic;
         m_rb.useGravity = false;
-        m_rb.mass = 1.0f * gameObject.transform.lossyScale.magnitude;
+        //m_rb.mass = 1.0f * gameObject.transform.lossyScale.magnitude;
     }
 
     void OnCollisionEnter(Collision other)
@@ -25,6 +25,7 @@ public class Obstacle : MonoBehaviour
 
         PlayerController player = other.gameObject.GetComponent<PlayerController>();
         player.LoseLife((uint)m_damage);
-        WorldTransformScript.m_instance.transform.Translate(-other.contacts[0].normal * m_resetDistance);
+        if(other.contacts.Length > 0)
+            WorldTransformScript.m_instance.transform.Translate(-other.contacts[0].normal * m_resetDistance);
     }
 }

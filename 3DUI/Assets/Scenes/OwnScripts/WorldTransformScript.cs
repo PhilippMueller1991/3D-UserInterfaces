@@ -3,12 +3,12 @@ using System.Collections;
 
 public class WorldTransformScript : MonoBehaviour {
 
-    public static WorldTransformScript m_instance = null;  // psuedo singleton
+    public static WorldTransformScript m_instance = null;  // pseudo singleton
     public SpaceshipMovementScript virtualWorld;
 
     Quaternion previousOrientation;
 
-    void OnAwake()
+    void Awake()
     {
         if (m_instance == null)
             m_instance = this;
@@ -32,7 +32,16 @@ public class WorldTransformScript : MonoBehaviour {
                 Quaternion.AngleAxis(virtualWorld.InputValues.rawAngleAroundZ, -Vector3.forward) * virtualWorld.Velocity;
             //transform.position = -virtualWorld.VirtualWorldPos;
 
-            transform.rotation = Quaternion.Inverse(virtualWorld.VirtualWorldRot) * transform.rotation;
+
+            transform.rotation = Quaternion.Inverse(virtualWorld.VirtualWorldRot) * (transform.rotation);
+            //Quaternion debugquat = Quaternion.Inverse(virtualWorld.VirtualWorldRot) * (transform.rotation);
+            //transform.RotateAround(virtualWorld.transform.position, Vector3.forward, debugquat.eulerAngles.z);
+            //transform.RotateAround(virtualWorld.transform.position, Vector3.right, debugquat.eulerAngles.x);
+            //transform.RotateAround(virtualWorld.transform.position, Vector3.up, debugquat.eulerAngles.y);
+
+            Vector3 debugline = transform.rotation * Vector3.forward;
+            Debug.DrawLine(Vector3.zero, debugline, Color.green);
+            
         }
     }
 }

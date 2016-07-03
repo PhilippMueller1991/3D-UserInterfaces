@@ -39,9 +39,9 @@ public class JoystickDisplay : MonoBehaviour {
 
     public void DisplayRotation(Vector3 rot)
     {
-        UpdateRotationImage(m_rotateX, rot.x);
-        UpdateRotationImage(m_rotateY, rot.y);
-        UpdateRotationImage(m_rotateZ, rot.z);
+        UpdateRotationImage(m_rotateX, -rot.x);
+        UpdateRotationImage(m_rotateY, -rot.y);
+        UpdateRotationImage(m_rotateZ, -rot.z);
     }
 
     public void DisplayMovement(Vector3 movement)
