@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     private int m_score = 0;
     [SerializeField]
     private int m_scoreMultiplier = 1;
+    [SerializeField]
+    private float m_timer = 0.0f;
 
     // delegates
     public delegate void LifeChanged(uint life);
@@ -18,7 +20,6 @@ public class PlayerController : MonoBehaviour
     // events
     public event LifeChanged OnLifeChanged;
     public event ScoreChanged OnScoreChanged;
-
 
     void Awake()
     {
@@ -66,5 +67,15 @@ public class PlayerController : MonoBehaviour
     {
         // TODO write accumulated score with old score multiplier
         m_scoreMultiplier = 1;
+    }
+
+    public void StartTimer()
+    {
+        m_timer = Time.time;
+    }
+
+    public void StopTimer()
+    {
+        m_timer = m_timer - Time.time;
     }
 }
