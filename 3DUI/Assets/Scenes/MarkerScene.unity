@@ -1224,7 +1224,7 @@ MonoBehaviour:
   videoConfigurationLinux1: 
   BackgroundLayer1: 9
   NearPlane: 0.01
-  FarPlane: 5
+  FarPlane: 1000
   ContentRotate90: 0
   ContentFlipH: 0
   ContentFlipV: 0
