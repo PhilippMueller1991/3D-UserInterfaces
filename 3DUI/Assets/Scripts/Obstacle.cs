@@ -14,6 +14,7 @@ public class Obstacle : MonoBehaviour
     {
         m_rb = GetComponent<Rigidbody>();
         m_rb.isKinematic = m_isKinematic;
+        m_rb.useGravity = false;
         m_rb.mass = 1.0f * gameObject.transform.lossyScale.magnitude;
     }
 
