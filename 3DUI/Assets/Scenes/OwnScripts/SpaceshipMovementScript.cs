@@ -30,6 +30,9 @@ public class SpaceshipMovementScript : MonoBehaviour
 
     public bool startTracking;
 
+    public Vector3 addPos;
+    public Vector3 addRot;
+
     // Use this for initialization
     void Start()
     {
@@ -57,8 +60,8 @@ public class SpaceshipMovementScript : MonoBehaviour
     {
         if(startTracking)
         { 
-            Vector3 addPos = new Vector3(InputValues.GetRight(), InputValues.GetUpward(), InputValues.GetForward());
-            Vector3 addRot = new Vector3(InputValues.GetPitch(), InputValues.GetYaw(), -InputValues.GetRoll());
+            addPos = new Vector3(InputValues.GetRight(), InputValues.GetUpward(), InputValues.GetForward());
+            addRot = new Vector3(InputValues.GetPitch(), InputValues.GetYaw(), -InputValues.GetRoll());
 
             if (addPos.magnitude >= 1)
                 addPos.Normalize();
