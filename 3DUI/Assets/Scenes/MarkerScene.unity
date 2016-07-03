@@ -176,7 +176,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 925a13e63b475bc47b6cf9df69507ec4, type: 2}
+  - {fileID: 2100000, guid: 394f3e15de7901344b0a6e23b20cf472, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -243,6 +243,7 @@ Transform:
   - {fileID: 1831099696}
   - {fileID: 637415624}
   - {fileID: 491961366}
+  - {fileID: 1528865121}
   m_Father: {fileID: 614231945}
   m_RootOrder: 2
 --- !u!114 &289257522
@@ -959,6 +960,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d1f560ccd42ca47448b2ac89a9e2a3a5, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1528865120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1528865121}
+  m_Layer: 9
+  m_Name: Tunnelsystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1528865121
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1528865120}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.689, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 289257521}
+  m_RootOrder: 5
 --- !u!1 &1650768678
 GameObject:
   m_ObjectHideFlags: 0
