@@ -25,5 +25,6 @@ public class Obstacle : MonoBehaviour
 
         PlayerController player = other.gameObject.GetComponent<PlayerController>();
         player.LoseLife((uint)m_damage);
+        WorldTransformScript.m_instance.transform.Translate(-other.contacts[0].normal * m_resetDistance);
     }
 }

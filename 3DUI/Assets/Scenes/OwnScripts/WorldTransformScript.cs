@@ -3,12 +3,20 @@ using System.Collections;
 
 public class WorldTransformScript : MonoBehaviour {
 
+    public static WorldTransformScript m_instance = null;  // psuedo singleton
     public SpaceshipMovementScript virtualWorld;
 
     Quaternion previousOrientation;
 
-	// Use this for initialization
-	void Start () {
+    void OnAwake()
+    {
+        if (m_instance == null)
+            m_instance = this;
+        else if (m_instance != this)
+            Destroy(this);
+    }
+
+    void Start () {
         previousOrientation = transform.rotation;
 	}
 	
