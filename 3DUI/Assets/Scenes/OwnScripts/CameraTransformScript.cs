@@ -193,6 +193,15 @@ public class CameraTransformScript : MonoBehaviour {
         // Remember these min/max values and set Boundaries for Pitch, Roll and Upward.
         // Threshold being determined by a weighted percentage between boundary and center towards averageCameraPositions
         // For now, just press Backspace to copy the values after calibrating.
+        if(shipMovement.StartTracking)
+        {
+            foreach (GameObject coordinate in coordinateSystemCheck)
+            {
+                coordinate.SetActive(false);
+                coordinate.layer = 0;
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             shipMovement.StartTracking = true;
