@@ -24,9 +24,10 @@ public class WorldTransformScript : MonoBehaviour {
 	void Update () {
         if (virtualWorld.StartTracking)
         {
-            Vector3 distanceVector = transform.position - virtualWorld.transform.position;
+            Vector3 shipPos = virtualWorld.transform.position; // + virtualWorld.transform.up * 1f;
+            Vector3 distanceVector = transform.position - shipPos;
             distanceVector = Quaternion.Inverse(virtualWorld.VirtualWorldRot) * distanceVector;
-            transform.position = virtualWorld.transform.position + distanceVector;
+            transform.position = distanceVector + shipPos;
 
             transform.position -= Quaternion.AngleAxis(virtualWorld.InputValues.rawAngleAroundX, Vector3.right) *
                 Quaternion.AngleAxis(virtualWorld.InputValues.rawAngleAroundZ, -Vector3.forward) * virtualWorld.Velocity;
@@ -41,6 +42,7 @@ public class WorldTransformScript : MonoBehaviour {
 
             Vector3 debugline = transform.rotation * Vector3.forward;
             Debug.DrawLine(Vector3.zero, debugline, Color.green);
+            Debug.DrawLine(virtualWorld.transform.position, distanceVector, Color.yellow);
             
         }
     }

@@ -70,7 +70,7 @@ public class SpaceshipMovementScript : MonoBehaviour
 
             addPos *= speedPos * Time.deltaTime;
             addRot *= speedRot * Time.deltaTime;
-
+            
             Velocity *= Mathf.Pow(velocityDamping, Time.deltaTime);
             Velocity = Quaternion.Euler(addRot) * Velocity;
 
