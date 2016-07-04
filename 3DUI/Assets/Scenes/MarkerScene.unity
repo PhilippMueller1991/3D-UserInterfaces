@@ -678,7 +678,7 @@ Light:
   serializedVersion: 6
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -1159,6 +1159,10 @@ Prefab:
     - target: {fileID: 400000, guid: a37dca31b64fb42aa9e216cb59117619, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 4.0071
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a37dca31b64fb42aa9e216cb59117619, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a37dca31b64fb42aa9e216cb59117619, type: 3}
