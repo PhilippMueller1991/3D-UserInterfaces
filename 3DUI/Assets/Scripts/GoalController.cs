@@ -15,7 +15,7 @@ public class GoalController : MonoBehaviour {
         coll.isTrigger = true;
 	}
 
-    void OnTriggerEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag != "Player")
             return;

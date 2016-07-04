@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int m_life = 100;
     [SerializeField]
+    private int m_hits = 0;
+    [SerializeField]
     private int m_score = 0;
     [SerializeField]
     private int m_scoreMultiplier = 1;
@@ -17,9 +19,11 @@ public class PlayerController : MonoBehaviour
     // delegates
     public delegate void LifeChanged(uint life);
     public delegate void ScoreChanged(uint score);
+    public delegate void HitChanged(uint hits);
     // events
     public event LifeChanged OnLifeChanged;
     public event ScoreChanged OnScoreChanged;
+    public event HitChanged OnHitChanged;
 
     void Awake()
     {
@@ -35,6 +39,8 @@ public class PlayerController : MonoBehaviour
             OnLifeChanged((uint)m_life);
         if (OnScoreChanged != null)
             OnScoreChanged((uint)m_score);
+        if (OnHitChanged != null)
+            OnHitChanged((uint)m_hits);
     }
 
     public void LoseLife(uint damage)
@@ -67,6 +73,15 @@ public class PlayerController : MonoBehaviour
     {
         // TODO write accumulated score with old score multiplier
         m_scoreMultiplier = 1;
+    }
+
+    // TODO: internal cooldown for collision hit additions
+    public void AddHit()
+    {
+        m_hits++;
+
+        if (OnHitChanged != null)
+            OnHitChanged((uint)m_hits);
     }
 
     public void StartTimer()
