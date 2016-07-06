@@ -24,10 +24,15 @@ public class Obstacle : MonoBehaviour
         if (other.gameObject.tag != "Player")
             return;
 
-        PlayerController player = other.gameObject.GetComponent<PlayerController>();
-        //player.LoseLife((uint)m_damage);
-        player.AddHit();
-        if (other.contacts.Length > 0)
-            WorldTransformScript.m_instance.virtualWorld.velocity = -other.contacts[0].normal * m_resetDistance;
+        if (WorldTransformScript.m_instance.virtualWorld.StartTracking)
+        {
+
+            PlayerController player = other.gameObject.GetComponent<PlayerController>();
+            //player.LoseLife((uint)m_damage);
+            player.AddHit();
+            if (other.contacts.Length > 0)
+                WorldTransformScript.m_instance.virtualWorld.velocity = -other.contacts[0].normal * m_resetDistance;
+
+        }
     }
 }

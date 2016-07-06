@@ -188,6 +188,11 @@ public class CameraTransformScript : MonoBehaviour {
         {
             calibrateRotations = !calibrateRotations;
         }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            shipMovement.StartTracking = !shipMovement.StartTracking;
+        }
         // After a delay of 3 seconds to position oneself at the center:
         // Instructions to hold Device for 3 seconds top, then bottom, then left, then right, then forward, then backwards (close to oneself)
         // Remember these min/max values and set Boundaries for Pitch, Roll and Upward.
