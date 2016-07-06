@@ -11,10 +11,9 @@ public class PlayerController : MonoBehaviour
     private int m_hits = 0;
     [SerializeField]
     private int m_score = 0;
-    [SerializeField]
-    private int m_scoreMultiplier = 1;
-    [SerializeField]
-    private float m_timer = 0.0f;
+
+    public float m_timer = 0.0f;
+    public bool m_isTimerActive = false;
 
     // delegates
     public delegate void LifeChanged(uint life);
@@ -41,6 +40,15 @@ public class PlayerController : MonoBehaviour
             OnScoreChanged((uint)m_score);
         if (OnHitChanged != null)
             OnHitChanged((uint)m_hits);
+
+        m_timer = 0.0f;
+        m_isTimerActive = false;
+    }
+
+    void Update()
+    {
+        if(m_isTimerActive)
+            m_timer += Time.deltaTime;
     }
 
     public void LoseLife(uint damage)
@@ -69,12 +77,6 @@ public class PlayerController : MonoBehaviour
             OnScoreChanged((uint)m_score);
     }
 
-    public void ResetMultiplier()
-    {
-        // TODO write accumulated score with old score multiplier
-        m_scoreMultiplier = 1;
-    }
-
     // TODO: internal cooldown for collision hit additions
     public void AddHit()
     {
@@ -86,11 +88,16 @@ public class PlayerController : MonoBehaviour
 
     public void StartTimer()
     {
-        m_timer = Time.time;
+        m_isTimerActive = true;
     }
 
     public void StopTimer()
     {
-        m_timer = m_timer - Time.time;
+        m_isTimerActive = false;
+    }
+
+    private int CalculateFinalScore()
+    {
+        return (int)(m_score - 0.1f * m_timer - 25 * m_hits);
     }
 }

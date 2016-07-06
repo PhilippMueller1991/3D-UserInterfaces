@@ -43,7 +43,8 @@ public class WorldTransformScript : MonoBehaviour {
             Vector3 debugline = transform.rotation * Vector3.forward;
             Debug.DrawLine(Vector3.zero, debugline, Color.green);
             Debug.DrawLine(virtualWorld.transform.position, distanceVector, Color.yellow);
-            
+
+            PlayerController.m_instance.StartTimer();
         }
     }
 }
