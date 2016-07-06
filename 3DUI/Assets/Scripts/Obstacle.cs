@@ -16,6 +16,7 @@ public class Obstacle : MonoBehaviour
         m_rb.isKinematic = m_isKinematic;
         m_rb.useGravity = false;
         //m_rb.mass = 1.0f * gameObject.transform.lossyScale.magnitude;
+        m_resetDistance = 0.005f;
     }
 
     void OnCollisionEnter(Collision other)
@@ -27,6 +28,6 @@ public class Obstacle : MonoBehaviour
         //player.LoseLife((uint)m_damage);
         player.AddHit();
         if (other.contacts.Length > 0)
-            WorldTransformScript.m_instance.virtualWorld.velocity -= other.contacts[0].normal * m_resetDistance;
+            WorldTransformScript.m_instance.virtualWorld.velocity = -other.contacts[0].normal * m_resetDistance;
     }
 }
