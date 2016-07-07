@@ -76,6 +76,8 @@ public class CameraTransformScript : MonoBehaviour {
 
     Transform cameraTrans;
 
+    int inputScheme;
+
 
 
     // Use this for initialization
@@ -116,6 +118,8 @@ public class CameraTransformScript : MonoBehaviour {
         handleLength = 0.1f;
 
         calibrateRotations = false;
+
+        inputScheme = 1;
     }
 
 
@@ -192,6 +196,20 @@ public class CameraTransformScript : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.P))
         {
             shipMovement.StartTracking = !shipMovement.StartTracking;
+            //if(shipMovement.StartTracking)
+            //    PlayerController.m_instance.PauseTimer();
+            //else
+            //    PlayerController.m_instance.ResumeTimer();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            inputScheme = 1;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            inputScheme = 2;
         }
         // After a delay of 3 seconds to position oneself at the center:
         // Instructions to hold Device for 3 seconds top, then bottom, then left, then right, then forward, then backwards (close to oneself)
@@ -501,32 +519,78 @@ public class CameraTransformScript : MonoBehaviour {
 
     public float GetForward()
     {
-        return angleForward;
+        switch (inputScheme)
+        {
+            case 1:
+                return angleForward;
+            case 2:
+                return positionPitch;
+            default:
+                return 0;
+        }
     }
 
     public float GetRight()
     {
-        return angleRight;
+        switch(inputScheme)
+        {
+            case 1:
+                return angleRight;
+            case 2:
+                return positionRoll;
+            default:
+                return 0;
+        }
     }
 
     public float GetYaw()
     {
-        return angleYaw;
+        switch (inputScheme)
+        {
+            case 1:
+            case 2:
+                return angleYaw;
+            default:
+                return 0;
+        }
     }
 
     public float GetPitch()
     {
-        return positionPitch;
+        switch (inputScheme)
+        {
+            case 1:
+                return positionPitch;
+            case 2:
+                return angleForward;
+            default:
+                return 0;
+        }
     }
 
     public float GetRoll()
     {
-        return positionRoll;
+        switch (inputScheme)
+        {
+            case 1:
+                return positionRoll;
+            case 2:
+                return angleRight;
+            default:
+                return 0;
+        }
     }
 
     public float GetUpward()
     {
-        return positionUpward;
+        switch (inputScheme)
+        {
+            case 1:
+            case 2:
+                return positionUpward;
+            default:
+                return 0;
+        }
     }
 
     /* -------------------- // Start helper functions // -------------------- */
@@ -535,6 +599,11 @@ public class CameraTransformScript : MonoBehaviour {
     {
         //Debug.Log("OnMarkerTracked");
         trackedMarker = marker;
+    }
+
+    void OnMarkerLost(ARMarker marker)
+    {
+        positionPitch = positionRoll = positionUpward = angleForward = angleRight = angleYaw = 0;
     }
 
     //Get an average (mean) from more then two quaternions (with two, slerp would be used).
