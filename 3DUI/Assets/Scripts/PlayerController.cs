@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
         m_isTimerActive = false;
     }
 
-    private int CalculateFinalScore()
+    public int GetFinalScore()
     {
         return (int)(m_score - 0.1f * m_timer - 25 * m_hits);
     }

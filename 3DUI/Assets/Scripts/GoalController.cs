@@ -22,5 +22,7 @@ public class GoalController : MonoBehaviour {
 
         PlayerController player = other.gameObject.GetComponent<PlayerController>();
         player.StopTimer();
+
+        FinalScoreDisplayController.m_instance.DisplayFinalScore();
     }
 }
